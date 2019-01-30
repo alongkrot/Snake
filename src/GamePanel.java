@@ -34,6 +34,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private Entity head, apple, body;
     private ArrayList<Entity> snake, wall, wall2, wall3, wall4, wall5, wall6, wall7, wall8;
     private boolean gameover;
+    private int score;
+    private int level;
+    private int lvlscore; 
 
     
     //movement
@@ -71,6 +74,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             left = true;
         } if (k == KeyEvent.VK_RIGHT) {
             right = true;
+        } if (k == KeyEvent.VK_ENTER) {
+            start = true;
+        } if (k == KeyEvent.VK_SPACE) {
+            pause = true;
         }
     }
 
@@ -85,6 +92,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             left = false;
         } if (k == KeyEvent.VK_RIGHT) {
             right = false;
+        } if (k == KeyEvent.VK_ENTER) {
+            start = false;
+        } if (k == KeyEvent.VK_SPACE) {
+            pause = false;
         } 
     }
 
@@ -142,6 +153,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         apple = new Entity(SIZE);
         setApple();
+        score = 0;
+		lvlscore=0;
+		level=0;
         setFPS(10);
         dy = 0;
         dx = 0 ;
@@ -159,8 +173,51 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 setApple();
             }
         }
+        if (level > 0) {
+			for(Entity e: wall){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall2){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall3){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall4){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall5){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall6){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall7){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+			for(Entity e: wall8){
+				if(e.isCollison(apple)){
+					setApple();
+				}
+			}
+		}
 
     }
+
     
     private void requestRender() {
         render(g2d);
@@ -169,7 +226,58 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         g.dispose();
     }
 
-
+    public void setWall() {
+		if(level >0 ) {
+			wall = new ArrayList<Entity>();
+			wall2 = new ArrayList<Entity>();
+			wall3 = new ArrayList<Entity>();
+			wall4 = new ArrayList<Entity>();
+			
+			wall5 = new ArrayList<Entity>();
+			wall6 = new ArrayList<Entity>();
+			wall7 = new ArrayList<Entity>();
+			wall8 = new ArrayList<Entity>();
+			
+			for (int i = level; i > 0; i--) {
+				int i2 = i * 10;
+				Entity e = new Entity(SIZE);
+				Entity e2 = new Entity(SIZE);
+				Entity e3 = new Entity(SIZE);
+				Entity e4 = new Entity(SIZE);
+				
+				Entity e5 = new Entity(SIZE);
+				Entity e6 = new Entity(SIZE);
+				Entity e7 = new Entity(SIZE);
+				Entity e8 = new Entity(SIZE);
+				
+				int x = WIDTH-10;
+				int y = HEIGHT-10;
+				int a = 0;
+				int b = 0;					
+				
+				e.setPosition(x, (WIDTH-10) - i2);
+				e2.setPosition((HEIGHT-10) -i2, y);
+				e3.setPosition(a, i2);
+				e4.setPosition(i2,b);
+				
+				e5.setPosition(x,a+i2);
+				e6.setPosition(b+i2,y);
+				e7.setPosition(a, x-i2);
+				e8.setPosition(y-i2,b);
+				
+				wall.add(e);
+				wall2.add(e2);
+				wall3.add(e3);
+				wall4.add(e4);
+				
+				wall5.add(e5);
+				wall6.add(e6);
+				wall7.add(e7);
+				wall8.add(e8);
+			}
+		}
+    }  
+        
     private void update() {
         if (gameover) {
             if (start) {
@@ -204,7 +312,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         if (start) {
             setUpLevel1();
-        }
+        } if (pause) {
+			dx = 0;
+			dy = 0;
+		}
 
         if (dx != 0 || dy != 0) {
             for (int i = snake.size()-1; i > 0; i--) {
@@ -215,9 +326,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         if (apple.isCollison(head)) {
             setApple();
+            score++;
+			lvlscore++;
             Entity e = new Entity(SIZE);
             e.setPosition(head.getX(), head.getY());
-            snake.add(e);           
+            snake.add(e);  
+            if (lvlscore>4) {
+				level++;
+				setFPS(10+level);
+				lvlscore=0;
+				setWall();	
+			}         
         }
 
         if (head.getX()<0) { 
@@ -238,7 +357,57 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 break;
             }
         }
-        
+        if (level > 0) {
+            for (Entity e: wall) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall2) {
+                if(e.isCollison(head)){
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall3) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall4) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall5) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall6) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall7) {
+                if (e.isCollison(head)) {
+                    gameover = true;
+                    break;
+                }
+            }
+            for (Entity e: wall8) {
+                if (e.isCollison(head)) {
+                    gameover =true;
+                    break;
+                }
+            }
+        }
+            
     }
 
 
@@ -251,7 +420,56 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         g2d.setColor(Color.RED);
         apple.render(g2d);
 
-    }
+        g2d.setColor(Color.WHITE);
+		g2d.drawString("Score : " + score, 10, 20);
+		
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("Level : " + level, 10, 35);
+		if(gameover){						
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("To restart press Enter button.",WIDTH /3, HEIGHT / 2 + 15);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, 15)); 
+			g2d.setColor(Color.RED);
+			g2d.drawString("Game over!", WIDTH /3, HEIGHT / 2);
+		}
+		if(pause){
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("Game paused!", WIDTH /3, HEIGHT / 2);
+		}
+		
+		if(level>0){
+			System.out.println("wall" + wall);
+			g2d.setColor(Color.GRAY);
+			for(Entity e : wall){
+			e.render(g2d);
+			}
+			for(Entity e : wall2){
+				e.render(g2d);
+			}
+			for(Entity e : wall3){
+				e.render(g2d);
+			}
+			for(Entity e : wall4){
+				e.render(g2d);
+			}
+			for(Entity e : wall5){
+				e.render(g2d);
+			}
+			for(Entity e : wall6){
+				e.render(g2d);
+			}
+			for(Entity e : wall7){
+				e.render(g2d);
+			}
+			for(Entity e : wall8){
+				e.render(g2d);
+			}
+		
+		}
+		
+	}
+
+    
 
     
 }
